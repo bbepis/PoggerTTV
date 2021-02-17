@@ -15,6 +15,8 @@ It is a mirror of `userscript.js` in this repo, so you're able to just copy past
 
 After refreshing, you will then get a new addon appearing in FFZ labeled "PoggerTTV" which needs to be enabled.
 
+![](https://i.imgur.com/pfAJeTH.png)
+
 ### Current emotes
 
 These are all emotes that are enabled globally with this extension. Some of them are banned from their respective services.
@@ -33,3 +35,5 @@ If you would like an emote to be added to this list and you have a compelling ar
 - sumSmash
 - miniHeston
 - miniJulia
+
+![](https://i.imgur.com/D0eO21U.png)
