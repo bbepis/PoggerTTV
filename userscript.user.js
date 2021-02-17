@@ -23,8 +23,8 @@ function load()
 
 		"website": "https://bepis.io/",
 		"settings": "add_ons.pogttv",
-		"src": "https://localhost/pttv/addon.js"
-	}
+		"src": "https://combinatronics.com/bbepis/PoggerTTV/master/addon.js"
+	};
 	
 	
 	

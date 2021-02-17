@@ -9,7 +9,7 @@ In the future, alternative emote backends will be supported.
 
 ### How to use:
 
-Add this userscript to your browser: Link
+Add this userscript to your browser: [Link](https://combinatronics.com/bbepis/PoggerTTV/master/userscript.user.js)
 
 It is a mirror of `userscript.js` in this repo, so you're able to just copy paste the contents of that if you do not wish to use the url.
 
