@@ -1,3 +1,5 @@
+import IPFS from "ipfs";
+
 class PoggerTTV extends FrankerFaceZ.utilities.addon.Addon
 {
 	constructor(...args) {
@@ -10,18 +12,21 @@ class PoggerTTV extends FrankerFaceZ.utilities.addon.Addon
 		this._id_global_emotes = "addon--pttv.poggerttv--emotes-global";
 	}
 	
-	async onLoad() {
+	onLoad() {
 		
 	}
 
-	onEnable() {
+	async onEnable() {
+
+		/** @type {IPFS} */
+		let ipfsNode = null;
 
 		const allEmotes = [
 			{ ffzId: "262468", name: "WeirdChamp" },
 			{ ffzId: "256055", name: "PogU" },
-			{ ffzId: "465131", name: "PogChamp" },
-			{ ffzId: "130077", name: "ZULUL" },
-			{ ffzId: "249060", name: "forsenCD" },
+			{ ffzId: "465131", name: "PogChamp" }, 
+			{ ffzId: "130077", name: "ZULUL" }, 
+			{ ffzId: "249060", name: "forsenCD", cid: "QmWnQVc1touGxbqwRkfqMxziKn5VxjQoAmxutLdLnyYuQN" },
 			{ ffzId: "211702", name: "HONEYDETECTED" },
 			{ ffzId: "287489", name: "Okayga" },
 			{ ffzId: "418189", name: "YEP" },
@@ -40,8 +45,29 @@ class PoggerTTV extends FrankerFaceZ.utilities.addon.Addon
 
 		for (let rawEmote of allEmotes)
 		{
-			function getUrlSize(size)
+			// eslint-disable-next-line no-inner-declarations
+			async function getUrlSize(size)
 			{
+				if (rawEmote.cid)
+				{
+					if (!ipfsNode)
+						ipfsNode = await IPFS.create();
+
+					/** @type {AsyncIterable<Uint8Array>} */
+					const stream = ipfsNode.cat(rawEmote.cid); 
+					
+					let bufs = [];
+
+					for await (const chunk of stream) {
+						// chunks of data are returned as a Buffer, convert it back to a string
+						bufs.push(chunk);
+					}
+
+					const data = Buffer.concat(bufs);
+
+					return URL.createObjectURL(new Blob([data], {type:"image/webp"}));
+				}
+
 				return rawEmote.ffzId
 					? `https://cdn.frankerfacez.com/emoticon/${rawEmote.ffzId}/${size}`
 					: `https://cdn.betterttv.net/emote/${rawEmote.bttvId}/${size == 4 ? 3 : size}x`;
@@ -49,9 +75,9 @@ class PoggerTTV extends FrankerFaceZ.utilities.addon.Addon
 
 			let emote = {
 				urls: {
-					1: getUrlSize(1),
-					2: getUrlSize(2),
-					4: getUrlSize(4),
+					1: await getUrlSize(1),
+					2: await getUrlSize(2),
+					4: await getUrlSize(4),
 				},
 				id: id++,
 				name: rawEmote.name,
@@ -76,13 +102,16 @@ class PoggerTTV extends FrankerFaceZ.utilities.addon.Addon
 		};
 		
 		this.emotes.addDefaultSet(this._id, this._id_global_emotes, set);
+
+		if (ipfsNode)
+			await ipfsNode.stop();
 	}
 
 	onDisable() {
 		this.emotes.removeDefaultSet(this._id, this._id_global_emotes);
 	}
 
-	async onUnload() {
+	onUnload() {
 		
 	}
 }
